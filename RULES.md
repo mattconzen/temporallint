@@ -23,6 +23,7 @@ Status legend:
 | `missingretrypolicy` | Timeouts & Retries | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#preventing-activity-retries) |
 | `missingstarttoclosetimeout` | Timeouts & Retries | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#preventing-activity-retries) |
 | `missingworkflowtimeout` | Timeouts & Retries | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#not-setting-a-workflow-timeout) |
+| `nogracefuldrain` | Operations | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#not-draining-activity-tasks-before-shutdown) |
 | `oversizedpayloadreturn` | Software Design | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#passing-too-much-information-from-activities) |
 | `payloadanderror` | Software Design | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#returning-both-payload-and-error) |
 | `pollingloopwithsleep` | Software Design | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#writing-polling-loops-in-workflow-code) |
@@ -32,6 +33,7 @@ Status legend:
 | `sideeffectnoresult` | Workflow Replay | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#not-using-return-value-in-side-effects) |
 | `signalchanneloutsideselector` | Software Design | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#assuming-signalsupdates-receive-in-order) |
 | `signalhandlerblocksonactivity` | Software Design | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#assuming-signalsupdates-receive-in-order) |
+| `startworkflowbadtaskqueue` | Other | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#starting-workflows-on-wrong-task-queue) |
 | `startworkflowfromactivity` | Software Design | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#starting-workflows-from-activities) |
 | `strictglobalmutation` | Workflow Replay | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#modifying-shared-state-in-workflow-code) |
 | `strictgokeyword` | Workflow Replay | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#performing-network-calls-in-workflow-code) |
@@ -51,6 +53,7 @@ Status legend:
 | `unboundednoceiling` | Timeouts & Retries | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#preventing-activity-retries) |
 | `unhandledctxerr` | Cancellation | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#deadlocking-when-workflow-canceled) |
 | `versioningwithoutgetversion` | Software Design | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#not-using-workflow-versioningpatching) |
+| `workernotaskqueue` | Operations | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#starting-workflows-on-wrong-task-queue) |
 | `workflowcheck` | Workflow Replay | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#not-using-static-analysissandboxed-sdk) |
 | `workflowidreusepolicymismatch` | Software Design | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#not-properly-scoping-semantic-workflow-ids) |
 | `workflowretrypolicy` | Timeouts & Retries | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#using-workflow-retries) |

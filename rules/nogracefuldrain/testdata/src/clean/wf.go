@@ -1,0 +1,10 @@
+package main
+
+import (
+	"go.temporal.io/sdk/worker"
+)
+
+func main() {
+	w := worker.New(nil, "tq", worker.Options{})
+	_ = w.Run(worker.InterruptCh())
+}

@@ -23,6 +23,7 @@ import (
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/missingretrypolicy"
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/missingstarttoclosetimeout"
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/missingworkflowtimeout"
+	"github.com/mattconzen/monorepo/tools/temporallint/rules/nogracefuldrain"
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/oversizedpayloadreturn"
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/payloadanderror"
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/pollingloopwithsleep"
@@ -32,6 +33,7 @@ import (
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/sideeffectnoresult"
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/signalchanneloutsideselector"
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/signalhandlerblocksonactivity"
+	"github.com/mattconzen/monorepo/tools/temporallint/rules/startworkflowbadtaskqueue"
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/startworkflowfromactivity"
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/strictglobalmutation"
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/strictgokeyword"
@@ -51,6 +53,7 @@ import (
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/unboundednoceiling"
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/unhandledctxerr"
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/versioningwithoutgetversion"
+	"github.com/mattconzen/monorepo/tools/temporallint/rules/workernotaskqueue"
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/workflowidreusepolicymismatch"
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/workflowretrypolicy"
 )
@@ -206,6 +209,20 @@ func implemented() []Entry {
 			Summary:    "Flags `for range` over a map in workflow code (iteration order is random).",
 			Analyzer:   strictmaprange.Analyzer,
 		},
+		// --- Batch 7: Operations + soft-flag promotions ---
+		{Name: nogracefuldrain.Analyzer.Name, Category: CategoryOperations, Status: StatusImplemented,
+			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#not-draining-activity-tasks-before-shutdown",
+			Summary:    "worker.Run(nil) skips graceful drain on shutdown.",
+			Analyzer:   nogracefuldrain.Analyzer},
+		{Name: workernotaskqueue.Analyzer.Name, Category: CategoryOperations, Status: StatusImplemented,
+			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#starting-workflows-on-wrong-task-queue",
+			Summary:    "worker.New requires a non-empty task queue.",
+			Analyzer:   workernotaskqueue.Analyzer},
+		{Name: startworkflowbadtaskqueue.Analyzer.Name, Category: CategoryOther, Status: StatusImplemented,
+			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#starting-workflows-on-wrong-task-queue",
+			Summary:    "StartWorkflowOptions.TaskQueue should match a worker.New task queue (package-local).",
+			Analyzer:   startworkflowbadtaskqueue.Analyzer},
+
 		// --- Batch 6: Software design ---
 		{Name: versioningwithoutgetversion.Analyzer.Name, Category: CategoryDesign, Status: StatusImplemented,
 			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#not-using-workflow-versioningpatching",
