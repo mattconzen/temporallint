@@ -97,6 +97,23 @@ mockgen — every check has a TDD-inverted pair:
 no Finding). Mirror of the static analyzers' `testdata/src/violation` /
 `testdata/src/clean` pattern.
 
+## Inverse-red verification
+
+The TDD-red property — every test must depend on its rule being live —
+is machine-checked. `cmd/verify-tdd-red` walks every rule under
+`rules/<name>/`, parses `rule.go`, replaces the analyzer's `Run` body
+with `return nil, nil`, runs the rule's test with `-count=1`, expects a
+failure, and restores the source. If any rule's test passes with the
+rule disabled, that rule's TDD-red guarantee is broken and the
+verifier exits non-zero.
+
+    go run ./tools/temporallint/cmd/verify-tdd-red
+
+CI runs this on every PR via `.github/workflows/go-lint.yml`. Coverage
+is the static analyzers under `rules/<name>/`; runtime checks and
+cleanup-versions phases use different test patterns and rely on
+explicit assertions in their test bodies.
+
 ## Layout
 
     tools/temporallint/
