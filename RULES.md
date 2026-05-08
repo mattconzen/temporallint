@@ -27,8 +27,12 @@ Status legend:
 | `payloadanderror` | Software Design | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#returning-both-payload-and-error) |
 | `pollingloopwithsleep` | Software Design | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#writing-polling-loops-in-workflow-code) |
 | `preventretriesbytimeout` | Timeouts & Retries | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#preventing-activity-retries) |
+| `queryhandlerwithsideeffects` | Software Design | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#querying-closed-workflows) |
+| `searchattributetyping` | Software Design | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#not-properly-scoping-semantic-workflow-ids) |
 | `sideeffectnoresult` | Workflow Replay | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#not-using-return-value-in-side-effects) |
 | `signalchanneloutsideselector` | Software Design | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#assuming-signalsupdates-receive-in-order) |
+| `signalhandlerblocksonactivity` | Software Design | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#assuming-signalsupdates-receive-in-order) |
+| `startworkflowfromactivity` | Software Design | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#starting-workflows-from-activities) |
 | `strictglobalmutation` | Workflow Replay | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#modifying-shared-state-in-workflow-code) |
 | `strictgokeyword` | Workflow Replay | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#performing-network-calls-in-workflow-code) |
 | `strictmakechan` | Workflow Replay | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#performing-network-calls-in-workflow-code) |
@@ -41,10 +45,14 @@ Status legend:
 | `stricttimeafter` | Workflow Replay | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#using-system-time-instead-of-workflow-time) |
 | `stricttimenow` | Workflow Replay | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#using-system-time-instead-of-workflow-time) |
 | `stricttimesleep` | Workflow Replay | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#using-system-time-instead-of-workflow-time) |
+| `terminatevscancel` | Operations | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#terminating-rather-than-canceling) |
+| `toomanyactivitytypes` | Software Design | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#doing-too-many-things-in-one-workflow) |
 | `unboundedloopnocnaw` | Software Design | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#not-using-continueasnew) |
 | `unboundednoceiling` | Timeouts & Retries | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#preventing-activity-retries) |
 | `unhandledctxerr` | Cancellation | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#deadlocking-when-workflow-canceled) |
+| `versioningwithoutgetversion` | Software Design | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#not-using-workflow-versioningpatching) |
 | `workflowcheck` | Workflow Replay | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#not-using-static-analysissandboxed-sdk) |
+| `workflowidreusepolicymismatch` | Software Design | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#not-properly-scoping-semantic-workflow-ids) |
 | `workflowretrypolicy` | Timeouts & Retries | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#using-workflow-retries) |
 | `breaking-payload-changes` | Workflow Replay | Planned | [link](https://github.com/jlegrone/100-temporal-mistakes#breaking-changes-to-payloads) |
 | `deadlock-on-cancel` | Cancellation | Planned | [link](https://github.com/jlegrone/100-temporal-mistakes#deadlocking-when-workflow-canceled) |

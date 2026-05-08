@@ -27,8 +27,12 @@ import (
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/payloadanderror"
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/pollingloopwithsleep"
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/preventretriesbytimeout"
+	"github.com/mattconzen/monorepo/tools/temporallint/rules/queryhandlerwithsideeffects"
+	"github.com/mattconzen/monorepo/tools/temporallint/rules/searchattributetyping"
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/sideeffectnoresult"
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/signalchanneloutsideselector"
+	"github.com/mattconzen/monorepo/tools/temporallint/rules/signalhandlerblocksonactivity"
+	"github.com/mattconzen/monorepo/tools/temporallint/rules/startworkflowfromactivity"
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/strictglobalmutation"
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/strictgokeyword"
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/strictmakechan"
@@ -41,9 +45,13 @@ import (
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/stricttimeafter"
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/stricttimenow"
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/stricttimesleep"
+	"github.com/mattconzen/monorepo/tools/temporallint/rules/terminatevscancel"
+	"github.com/mattconzen/monorepo/tools/temporallint/rules/toomanyactivitytypes"
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/unboundedloopnocnaw"
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/unboundednoceiling"
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/unhandledctxerr"
+	"github.com/mattconzen/monorepo/tools/temporallint/rules/versioningwithoutgetversion"
+	"github.com/mattconzen/monorepo/tools/temporallint/rules/workflowidreusepolicymismatch"
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/workflowretrypolicy"
 )
 
@@ -198,6 +206,40 @@ func implemented() []Entry {
 			Summary:    "Flags `for range` over a map in workflow code (iteration order is random).",
 			Analyzer:   strictmaprange.Analyzer,
 		},
+		// --- Batch 6: Software design ---
+		{Name: versioningwithoutgetversion.Analyzer.Name, Category: CategoryDesign, Status: StatusImplemented,
+			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#not-using-workflow-versioningpatching",
+			Summary:    "Branching workflows that swap activities should use workflow.GetVersion (heuristic).",
+			Analyzer:   versioningwithoutgetversion.Analyzer},
+		{Name: signalhandlerblocksonactivity.Analyzer.Name, Category: CategoryDesign, Status: StatusImplemented,
+			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#assuming-signalsupdates-receive-in-order",
+			Summary:    "Signal handler synchronously waits on ExecuteActivity.",
+			Analyzer:   signalhandlerblocksonactivity.Analyzer},
+		{Name: queryhandlerwithsideeffects.Analyzer.Name, Category: CategoryDesign, Status: StatusImplemented,
+			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#querying-closed-workflows",
+			Summary:    "Query handlers must be pure.",
+			Analyzer:   queryhandlerwithsideeffects.Analyzer},
+		{Name: toomanyactivitytypes.Analyzer.Name, Category: CategoryDesign, Status: StatusImplemented,
+			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#doing-too-many-things-in-one-workflow",
+			Summary:    "Workflow references too many distinct activity types (heuristic).",
+			Analyzer:   toomanyactivitytypes.Analyzer},
+		{Name: workflowidreusepolicymismatch.Analyzer.Name, Category: CategoryDesign, Status: StatusImplemented,
+			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#not-properly-scoping-semantic-workflow-ids",
+			Summary:    "StartWorkflowOptions should set WorkflowIDReusePolicy explicitly (heuristic).",
+			Analyzer:   workflowidreusepolicymismatch.Analyzer},
+		{Name: searchattributetyping.Analyzer.Name, Category: CategoryDesign, Status: StatusImplemented,
+			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#not-properly-scoping-semantic-workflow-ids",
+			Summary:    "UpsertSearchAttributes should use typed keys, not map[string]interface{}.",
+			Analyzer:   searchattributetyping.Analyzer},
+		{Name: terminatevscancel.Analyzer.Name, Category: CategoryOperations, Status: StatusImplemented,
+			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#terminating-rather-than-canceling",
+			Summary:    "TerminateWorkflow skips graceful cancellation.",
+			Analyzer:   terminatevscancel.Analyzer},
+		{Name: startworkflowfromactivity.Analyzer.Name, Category: CategoryDesign, Status: StatusImplemented,
+			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#starting-workflows-from-activities",
+			Summary:    "Activities should not start workflows.",
+			Analyzer:   startworkflowfromactivity.Analyzer},
+
 		// --- Batch 5: Cancellation & control flow ---
 		{
 			Name: unboundedloopnocnaw.Analyzer.Name, Category: CategoryDesign, Status: StatusImplemented,

@@ -92,5 +92,11 @@ type Selector interface {
 
 func NewSelector(ctx Context) Selector { return nil }
 
+func SetQueryHandler(ctx Context, name string, fn interface{}) error      { return nil }
+func RegisterSignalHandler(ctx Context, name string, fn interface{}) error { return nil }
+func UpsertSearchAttributes(ctx Context, attrs map[string]interface{}) error {
+	return nil
+}
+
 
 const DefaultVersion = -1
