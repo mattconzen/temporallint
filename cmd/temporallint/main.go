@@ -5,6 +5,7 @@
 //	temporallint ./...                       # static analysis multichecker
 //	temporallint runtime [flags...]          # runtime verification (Tier A)
 //	temporallint cleanup-versions [flags...] # workflow.GetVersion cleanup (hybrid)
+//	temporallint hook install|uninstall|status [flags...]  # git-hook integration
 //
 // Argv dispatch is intentional: multichecker.Main consumes positional
 // args as Go package patterns, so a regular flag-based subcommand
@@ -19,6 +20,7 @@ import (
 
 	"github.com/mattconzen/monorepo/tools/temporallint/all"
 	cleanupcmd "github.com/mattconzen/monorepo/tools/temporallint/cleanupversions/cmd"
+	"github.com/mattconzen/monorepo/tools/temporallint/hookcmd"
 	runtimecmd "github.com/mattconzen/monorepo/tools/temporallint/runtime/cmd"
 )
 
@@ -29,6 +31,8 @@ func main() {
 			os.Exit(runtimecmd.Main(os.Args[2:], os.Stdout, os.Stderr))
 		case "cleanup-versions":
 			os.Exit(cleanupcmd.Main(os.Args[2:], os.Stdout, os.Stderr))
+		case "hook":
+			os.Exit(hookcmd.Main(os.Args[2:], os.Stdout, os.Stderr))
 		}
 	}
 	multichecker.Main(all.Analyzers()...)
