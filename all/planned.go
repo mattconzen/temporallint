@@ -6,15 +6,15 @@ package all
 func planned() []Entry {
 	return []Entry{
 		// --- Workflow Limits (mostly RuntimeOnly) -------------------------
-		{Name: "history-event-overflow", Category: CategoryWorkflowLimits, Status: StatusRuntimeOnly,
+		{Name: "history-event-overflow", Category: CategoryWorkflowLimits, Status: StatusRuntimeImplemented,
 			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#overflowing-workflow-history-length",
-			Summary:    "Workflow history exceeds maximum event count. Detect via metrics, not source."},
-		{Name: "history-bytes-overflow", Category: CategoryWorkflowLimits, Status: StatusRuntimeOnly,
+			Summary:    "Workflow history event count approaches the server hard cap. Enforced by `temporallint runtime` (runtime-history-events)."},
+		{Name: "history-bytes-overflow", Category: CategoryWorkflowLimits, Status: StatusRuntimeImplemented,
 			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#overflowing-workflow-history-bytes",
-			Summary:    "Workflow history exceeds maximum size. Detect via metrics."},
-		{Name: "individual-payload-overflow", Category: CategoryWorkflowLimits, Status: StatusRuntimeOnly,
+			Summary:    "Workflow history size in bytes is too large. Enforced by `temporallint runtime` (runtime-history-bytes)."},
+		{Name: "individual-payload-overflow", Category: CategoryWorkflowLimits, Status: StatusRuntimeImplemented,
 			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#overflowing-maximum-individual-payload-size",
-			Summary:    "Individual payload exceeds maximum size."},
+			Summary:    "Individual event payload exceeds maximum size. Enforced by `temporallint runtime` (runtime-individual-payload)."},
 		{Name: "shard-contention", Category: CategoryWorkflowLimits, Status: StatusRuntimeOnly,
 			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#shard-contention-due-to-concurrent-updates",
 			Summary:    "Concurrent updates contend on a single shard."},
@@ -26,12 +26,12 @@ func planned() []Entry {
 			Summary:    "Workflow task exceeds 10s default timeout."},
 
 		// --- Workflow Replay (mix) ----------------------------------------
-		{Name: "no-versioning", Category: CategoryReplay, Status: StatusPlanned,
+		{Name: "no-versioning", Category: CategoryReplay, Status: StatusDocOnly,
 			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#not-using-workflow-versioningpatching",
-			Summary:    "Detect breaking workflow changes without GetVersion guard. Planned for Batch 6."},
-		{Name: "incorrect-patching", Category: CategoryReplay, Status: StatusPlanned,
+			Summary:    "Covered by the static rule `versioningwithoutgetversion` (Batch 6) and the hybrid `cleanup-versions` tool (Batch 9)."},
+		{Name: "incorrect-patching", Category: CategoryReplay, Status: StatusHybridImplemented,
 			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#incorrect-workflow-patching",
-			Summary:    "GetVersion called with wrong version numbers / branch removed prematurely."},
+			Summary:    "Static + runtime: `temporallint cleanup-versions` finds obsolete GetVersion calls and verifies safety against live workflows."},
 		{Name: "replay-misunderstanding", Category: CategoryReplay, Status: StatusDocOnly,
 			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#thinking-replay-means-re-running-activities",
 			Summary:    "Conceptual: replay does not re-run activities."},
@@ -61,6 +61,9 @@ func planned() []Entry {
 		{Name: "too-short-timeouts", Category: CategoryTimeouts, Status: StatusPlanned,
 			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#setting-too-short-timeouts",
 			Summary:    "StartToCloseTimeout < downstream p99 latency causes false retries."},
+		{Name: "no-workflow-timeout", Category: CategoryTimeouts, Status: StatusRuntimeImplemented,
+			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#not-setting-a-workflow-timeout",
+			Summary:    "Workflow runs without WorkflowExecutionTimeout. Enforced by `temporallint runtime` (runtime-no-workflow-timeout); static side: missingworkflowtimeout."},
 
 		// --- Cancellation -------------------------------------------------
 		{Name: "activity-vs-workflow-cancel", Category: CategoryCancellation, Status: StatusDocOnly,

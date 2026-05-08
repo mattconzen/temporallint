@@ -62,12 +62,21 @@ import (
 type Status string
 
 const (
-	// StatusImplemented means an Analyzer is wired up and emits diagnostics.
+	// StatusImplemented means a static Analyzer is wired up and emits diagnostics.
 	StatusImplemented Status = "Implemented"
+	// StatusRuntimeImplemented means a runtime check (under tools/temporallint/runtime)
+	// is wired up. Static analysis cannot detect the mistake; the runtime
+	// subcommand verifies it against a live Temporal server.
+	StatusRuntimeImplemented Status = "RuntimeImplemented"
+	// StatusHybridImplemented means the rule is enforced by a tool that
+	// combines static analysis AND runtime verification — both code paths
+	// run together (see tools/temporallint/cleanupversions).
+	StatusHybridImplemented Status = "HybridImplemented"
 	// StatusPlanned means the rule is on the roadmap but not yet implemented.
 	StatusPlanned Status = "Planned"
-	// StatusRuntimeOnly means the mistake is only visible at runtime
-	// (history size, sync-match rate, STSL, etc.) so no static rule is possible.
+	// StatusRuntimeOnly means the mistake is only visible at runtime and no
+	// runtime check has been written yet (most often because it requires
+	// metrics scraping rather than SDK calls).
 	StatusRuntimeOnly Status = "RuntimeOnly"
 	// StatusDocOnly means the mistake is a design/process concern surfaced for
 	// awareness but not enforced.
@@ -466,12 +475,16 @@ func rank(s Status) int {
 	switch s {
 	case StatusImplemented:
 		return 0
-	case StatusPlanned:
+	case StatusHybridImplemented:
 		return 1
-	case StatusRuntimeOnly:
+	case StatusRuntimeImplemented:
 		return 2
-	case StatusDocOnly:
+	case StatusPlanned:
 		return 3
+	case StatusRuntimeOnly:
+		return 4
+	case StatusDocOnly:
+		return 5
 	}
-	return 4
+	return 6
 }

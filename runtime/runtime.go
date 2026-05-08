@@ -113,6 +113,22 @@ type EventSummary struct {
 	PayloadSize int64
 }
 
+// VersionMarker is the projection of a workflow.GetVersion marker
+// recorded in workflow history. The cleanup-versions subcommand uses
+// these to verify whether a GetVersion call is safe to remove.
+type VersionMarker struct {
+	ChangeID string
+	Version  int
+}
+
+// VersionAPI extends WorkflowAPI with the operations needed by the
+// cleanup-versions subcommand. Implementations may also satisfy
+// WorkflowAPI; tests can satisfy only the methods they need.
+type VersionAPI interface {
+	OpenWorkflows(ctx context.Context, q ListQuery) (ListResult, error)
+	VersionMarkers(ctx context.Context, workflowID, runID string) ([]VersionMarker, error)
+}
+
 // Deps is what every Check.Run receives.
 type Deps struct {
 	API        WorkflowAPI

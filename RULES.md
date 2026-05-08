@@ -4,9 +4,10 @@
 This table is the authoritative inventory of [Temporal anti-patterns](https://github.com/jlegrone/100-temporal-mistakes) that temporallint knows about.
 
 Status legend:
-- **Implemented** — analyzer is wired up and emits diagnostics.
+- **Implemented** — static analyzer is wired up and emits diagnostics.
+- **RuntimeImplemented** — runtime check is wired up; verified via `temporallint runtime`.
 - **Planned** — on the roadmap; entry exists so the gap is visible.
-- **RuntimeOnly** — only detectable at runtime (metrics / observability).
+- **RuntimeOnly** — only detectable at runtime; no check has been written yet (typically requires metrics scraping rather than SDK calls).
 - **DocOnly** — design or process concern; surfaced for awareness.
 
 | Rule | Category | Status | Source |
@@ -57,10 +58,14 @@ Status legend:
 | `workflowcheck` | Workflow Replay | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#not-using-static-analysissandboxed-sdk) |
 | `workflowidreusepolicymismatch` | Software Design | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#not-properly-scoping-semantic-workflow-ids) |
 | `workflowretrypolicy` | Timeouts & Retries | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#using-workflow-retries) |
+| `incorrect-patching` | Workflow Replay | HybridImplemented | [link](https://github.com/jlegrone/100-temporal-mistakes#incorrect-workflow-patching) |
+| `history-bytes-overflow` | Workflow Limits | RuntimeImplemented | [link](https://github.com/jlegrone/100-temporal-mistakes#overflowing-workflow-history-bytes) |
+| `history-event-overflow` | Workflow Limits | RuntimeImplemented | [link](https://github.com/jlegrone/100-temporal-mistakes#overflowing-workflow-history-length) |
+| `individual-payload-overflow` | Workflow Limits | RuntimeImplemented | [link](https://github.com/jlegrone/100-temporal-mistakes#overflowing-maximum-individual-payload-size) |
+| `no-workflow-timeout` | Timeouts & Retries | RuntimeImplemented | [link](https://github.com/jlegrone/100-temporal-mistakes#not-setting-a-workflow-timeout) |
 | `breaking-payload-changes` | Workflow Replay | Planned | [link](https://github.com/jlegrone/100-temporal-mistakes#breaking-changes-to-payloads) |
 | `deadlock-on-cancel` | Cancellation | Planned | [link](https://github.com/jlegrone/100-temporal-mistakes#deadlocking-when-workflow-canceled) |
 | `expensive-workflow-computation` | Workflow Replay | Planned | [link](https://github.com/jlegrone/100-temporal-mistakes#performing-expensive-computation-in-workflow-code) |
-| `incorrect-patching` | Workflow Replay | Planned | [link](https://github.com/jlegrone/100-temporal-mistakes#incorrect-workflow-patching) |
 | `local-activity-misuse` | Software Design | Planned | [link](https://github.com/jlegrone/100-temporal-mistakes#using-local-activities) |
 | `multiple-input-payloads` | Software Design | Planned | [link](https://github.com/jlegrone/100-temporal-mistakes#using-multiple-inputresponse-payloads) |
 | `no-continue-as-new` | Software Design | Planned | [link](https://github.com/jlegrone/100-temporal-mistakes#not-using-continueasnew) |
@@ -68,16 +73,12 @@ Status legend:
 | `no-heartbeat-details` | Software Design | Planned | [link](https://github.com/jlegrone/100-temporal-mistakes#not-using-activity-heartbeat-details) |
 | `no-parent-close-policy` | Cancellation | Planned | [link](https://github.com/jlegrone/100-temporal-mistakes#not-using-parentclosepolicy) |
 | `no-replay-validation` | Operations | Planned | [link](https://github.com/jlegrone/100-temporal-mistakes#not-validating-replay-safety-before-deployments) |
-| `no-versioning` | Workflow Replay | Planned | [link](https://github.com/jlegrone/100-temporal-mistakes#not-using-workflow-versioningpatching) |
 | `polling-loop-in-workflow` | Software Design | Planned | [link](https://github.com/jlegrone/100-temporal-mistakes#writing-polling-loops-in-workflow-code) |
 | `signal-drain-missing` | Software Design | Planned | [link](https://github.com/jlegrone/100-temporal-mistakes#not-draining-signals-before-completing) |
 | `start-workflow-from-activity` | Software Design | Planned | [link](https://github.com/jlegrone/100-temporal-mistakes#starting-workflows-from-activities) |
 | `too-short-timeouts` | Timeouts & Retries | Planned | [link](https://github.com/jlegrone/100-temporal-mistakes#setting-too-short-timeouts) |
 | `wrong-task-queue` | Other | Planned | [link](https://github.com/jlegrone/100-temporal-mistakes#starting-workflows-on-wrong-task-queue) |
 | `exceeding-task-timeout` | Workflow Limits | RuntimeOnly | [link](https://github.com/jlegrone/100-temporal-mistakes#exceeding-10s-task-timeout) |
-| `history-bytes-overflow` | Workflow Limits | RuntimeOnly | [link](https://github.com/jlegrone/100-temporal-mistakes#overflowing-workflow-history-bytes) |
-| `history-event-overflow` | Workflow Limits | RuntimeOnly | [link](https://github.com/jlegrone/100-temporal-mistakes#overflowing-workflow-history-length) |
-| `individual-payload-overflow` | Workflow Limits | RuntimeOnly | [link](https://github.com/jlegrone/100-temporal-mistakes#overflowing-maximum-individual-payload-size) |
 | `no-stsl-monitoring` | Operations | RuntimeOnly | [link](https://github.com/jlegrone/100-temporal-mistakes#not-monitoring-stsl) |
 | `no-sync-match-monitoring` | Operations | RuntimeOnly | [link](https://github.com/jlegrone/100-temporal-mistakes#not-monitoring-sync-match-rate) |
 | `shard-contention` | Workflow Limits | RuntimeOnly | [link](https://github.com/jlegrone/100-temporal-mistakes#shard-contention-due-to-concurrent-updates) |
@@ -96,6 +97,7 @@ Status legend:
 | `no-graceful-drain` | Operations | DocOnly | [link](https://github.com/jlegrone/100-temporal-mistakes#not-draining-activity-tasks-before-shutdown) |
 | `no-replay-debug` | Operations | DocOnly | [link](https://github.com/jlegrone/100-temporal-mistakes#not-using-workflow-replay-for-debugging) |
 | `no-sdk-observability` | Operations | DocOnly | [link](https://github.com/jlegrone/100-temporal-mistakes#not-using-temporal-sdk-for-observability) |
+| `no-versioning` | Workflow Replay | DocOnly | [link](https://github.com/jlegrone/100-temporal-mistakes#not-using-workflow-versioningpatching) |
 | `no-wait-for-child-start` | Software Design | DocOnly | [link](https://github.com/jlegrone/100-temporal-mistakes#not-waiting-for-child-workflows-to-start) |
 | `no-workflow-reset` | Operations | DocOnly | [link](https://github.com/jlegrone/100-temporal-mistakes#not-knowing-about-workflow-reset) |
 | `non-idempotent-activity` | Software Design | DocOnly | [link](https://github.com/jlegrone/100-temporal-mistakes#not-making-activities-idempotent) |
@@ -114,6 +116,20 @@ Status legend:
 | `workflow-timeout-cleanup` | Timeouts & Retries | DocOnly | [link](https://github.com/jlegrone/100-temporal-mistakes#assuming-workflow-timeouts-allow-graceful-cleanup) |
 
 
-Regenerate with:
+## Running runtime checks
+
+Static analyzers run via `go test ./tools/temporallint/...` or via the binary
+on Go packages: `temporallint ./...`. Runtime checks need a live Temporal
+server. Invoke them via the same binary with the `runtime` subcommand:
+
+    temporallint runtime --address localhost:7233 --namespace default --since 24h
+
+Authentication uses `--api-key` (env: `TEMPORAL_API_KEY`) for Temporal Cloud
+or any gateway with API-key support; without a key the dial is plain
+gRPC, suitable for `temporal server start-dev`. `--output=json` emits
+machine-readable findings; `--fail-on=warn` makes any warn-tier finding
+produce a non-zero exit code.
+
+## Regenerating
 
     go run ./tools/temporallint/cmd/gen-rules > tools/temporallint/RULES.md

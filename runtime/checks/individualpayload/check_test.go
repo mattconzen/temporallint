@@ -7,7 +7,7 @@ import (
 
 	"github.com/mattconzen/monorepo/tools/temporallint/runtime"
 	"github.com/mattconzen/monorepo/tools/temporallint/runtime/checks/individualpayload"
-	"github.com/mattconzen/monorepo/tools/temporallint/runtime/internal/fakeapi"
+	"github.com/mattconzen/monorepo/tools/temporallint/runtime/fakeapi"
 	"github.com/mattconzen/monorepo/tools/temporallint/runtime/thresholds"
 )
 
