@@ -129,3 +129,22 @@ func SimpleReplaceFix(message string, start, end token.Pos, replacement string) 
 func Requires() []*analysis.Analyzer {
 	return []*analysis.Analyzer{inspect.Analyzer}
 }
+
+// MatchSelectorCall reports whether call is `<recv>.<name>(...)` at the
+// AST level (no type info required). Returns true for both
+// package-qualified calls (`workflow.NewTimer(...)`) and method calls
+// where `recv` is a local identifier.
+func MatchSelectorCall(call *ast.CallExpr, recv, name string) bool {
+	sel, ok := call.Fun.(*ast.SelectorExpr)
+	if !ok {
+		return false
+	}
+	if sel.Sel.Name != name {
+		return false
+	}
+	id, ok := sel.X.(*ast.Ident)
+	if !ok {
+		return false
+	}
+	return id.Name == recv
+}

@@ -11,13 +11,24 @@ import (
 
 	wfcheck "go.temporal.io/sdk/contrib/tools/workflowcheck/workflow"
 
+	"github.com/mattconzen/monorepo/tools/temporallint/rules/activitycallsexecuteactivity"
+	"github.com/mattconzen/monorepo/tools/temporallint/rules/activityignoresctxdone"
+	"github.com/mattconzen/monorepo/tools/temporallint/rules/activitymissingcontext"
+	"github.com/mattconzen/monorepo/tools/temporallint/rules/awaitnotimeout"
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/childworkflownotimeout"
+	"github.com/mattconzen/monorepo/tools/temporallint/rules/missingdisconnectedcontextcleanup"
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/maxattemptsone"
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/missingheartbeattimeout"
+	"github.com/mattconzen/monorepo/tools/temporallint/rules/missingrecordheartbeat"
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/missingretrypolicy"
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/missingstarttoclosetimeout"
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/missingworkflowtimeout"
+	"github.com/mattconzen/monorepo/tools/temporallint/rules/oversizedpayloadreturn"
+	"github.com/mattconzen/monorepo/tools/temporallint/rules/payloadanderror"
+	"github.com/mattconzen/monorepo/tools/temporallint/rules/pollingloopwithsleep"
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/preventretriesbytimeout"
+	"github.com/mattconzen/monorepo/tools/temporallint/rules/sideeffectnoresult"
+	"github.com/mattconzen/monorepo/tools/temporallint/rules/signalchanneloutsideselector"
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/strictglobalmutation"
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/strictgokeyword"
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/strictmakechan"
@@ -30,7 +41,9 @@ import (
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/stricttimeafter"
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/stricttimenow"
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/stricttimesleep"
+	"github.com/mattconzen/monorepo/tools/temporallint/rules/unboundedloopnocnaw"
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/unboundednoceiling"
+	"github.com/mattconzen/monorepo/tools/temporallint/rules/unhandledctxerr"
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/workflowretrypolicy"
 )
 
@@ -38,17 +51,12 @@ import (
 type Status string
 
 const (
-	// StatusImplemented means a static Analyzer is wired up and emits diagnostics.
+	// StatusImplemented means an Analyzer is wired up and emits diagnostics.
 	StatusImplemented Status = "Implemented"
-	// StatusRuntimeImplemented means a runtime check (under tools/temporallint/runtime)
-	// is wired up. Static analysis cannot detect the mistake; the runtime
-	// subcommand verifies it against a live Temporal server.
-	StatusRuntimeImplemented Status = "RuntimeImplemented"
 	// StatusPlanned means the rule is on the roadmap but not yet implemented.
 	StatusPlanned Status = "Planned"
-	// StatusRuntimeOnly means the mistake is only visible at runtime and no
-	// runtime check has been written yet (most often because it requires
-	// metrics scraping rather than SDK calls).
+	// StatusRuntimeOnly means the mistake is only visible at runtime
+	// (history size, sync-match rate, STSL, etc.) so no static rule is possible.
 	StatusRuntimeOnly Status = "RuntimeOnly"
 	// StatusDocOnly means the mistake is a design/process concern surfaced for
 	// awareness but not enforced.
@@ -190,6 +198,102 @@ func implemented() []Entry {
 			Summary:    "Flags `for range` over a map in workflow code (iteration order is random).",
 			Analyzer:   strictmaprange.Analyzer,
 		},
+		// --- Batch 5: Cancellation & control flow ---
+		{
+			Name: unboundedloopnocnaw.Analyzer.Name, Category: CategoryDesign, Status: StatusImplemented,
+			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#not-using-continueasnew",
+			Summary:    "Workflow with unbounded for{} loop must call ContinueAsNew.",
+			Analyzer:   unboundedloopnocnaw.Analyzer,
+		},
+		{
+			Name: pollingloopwithsleep.Analyzer.Name, Category: CategoryDesign, Status: StatusImplemented,
+			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#writing-polling-loops-in-workflow-code",
+			Summary:    "Polling loops should use signals/timers, not workflow.Sleep (heuristic).",
+			Analyzer:   pollingloopwithsleep.Analyzer,
+		},
+		{
+			Name: awaitnotimeout.Analyzer.Name, Category: CategoryCancellation, Status: StatusImplemented,
+			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#deadlocking-when-workflow-canceled",
+			Summary:    "workflow.Await without paired timer can stall forever.",
+			Analyzer:   awaitnotimeout.Analyzer,
+		},
+		{
+			Name: signalchanneloutsideselector.Analyzer.Name, Category: CategoryDesign, Status: StatusImplemented,
+			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#assuming-signalsupdates-receive-in-order",
+			Summary:    "Direct GetSignalChannel.Receive should be inside a NewSelector (heuristic).",
+			Analyzer:   signalchanneloutsideselector.Analyzer,
+		},
+		{
+			Name: missingdisconnectedcontextcleanup.Analyzer.Name, Category: CategoryCancellation, Status: StatusImplemented,
+			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#not-using-disconnected-context-for-cleanup",
+			Summary:    "Deferred ExecuteActivity must use NewDisconnectedContext (heuristic).",
+			Analyzer:   missingdisconnectedcontextcleanup.Analyzer,
+		},
+		{
+			Name: unhandledctxerr.Analyzer.Name, Category: CategoryCancellation, Status: StatusImplemented,
+			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#deadlocking-when-workflow-canceled",
+			Summary:    "Workflow with Future.Get should check ctx.Err() (heuristic).",
+			Analyzer:   unhandledctxerr.Analyzer,
+		},
+
+		// --- Batch 4: Activity shape ---
+		{
+			Name:       payloadanderror.Analyzer.Name,
+			Category:   CategoryDesign,
+			Status:     StatusImplemented,
+			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#returning-both-payload-and-error",
+			Summary:    "Activity returns must not provide both a non-zero payload and a non-nil error.",
+			Analyzer:   payloadanderror.Analyzer,
+		},
+		{
+			Name:       activitycallsexecuteactivity.Analyzer.Name,
+			Category:   CategoryDesign,
+			Status:     StatusImplemented,
+			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#starting-workflows-from-activities",
+			Summary:    "Activities cannot orchestrate other activities.",
+			Analyzer:   activitycallsexecuteactivity.Analyzer,
+		},
+		{
+			Name:       activitymissingcontext.Analyzer.Name,
+			Category:   CategoryDesign,
+			Status:     StatusImplemented,
+			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#not-making-activities-idempotent",
+			Summary:    "Activities must accept context.Context as first parameter.",
+			Analyzer:   activitymissingcontext.Analyzer,
+		},
+		{
+			Name:       activityignoresctxdone.Analyzer.Name,
+			Category:   CategoryDesign,
+			Status:     StatusImplemented,
+			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#not-sending-heartbeats-from-activities",
+			Summary:    "Activity loops must select on ctx.Done() or heartbeat (heuristic).",
+			Analyzer:   activityignoresctxdone.Analyzer,
+		},
+		{
+			Name:       missingrecordheartbeat.Analyzer.Name,
+			Category:   CategoryDesign,
+			Status:     StatusImplemented,
+			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#not-sending-heartbeats-from-activities",
+			Summary:    "Long activity loops should call activity.RecordHeartbeat (heuristic).",
+			Analyzer:   missingrecordheartbeat.Analyzer,
+		},
+		{
+			Name:       oversizedpayloadreturn.Analyzer.Name,
+			Category:   CategoryDesign,
+			Status:     StatusImplemented,
+			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#passing-too-much-information-from-activities",
+			Summary:    "Activity return type has too many fields (heuristic).",
+			Analyzer:   oversizedpayloadreturn.Analyzer,
+		},
+		{
+			Name:       sideeffectnoresult.Analyzer.Name,
+			Category:   CategoryReplay,
+			Status:     StatusImplemented,
+			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#not-using-return-value-in-side-effects",
+			Summary:    "workflow.SideEffect result must be captured.",
+			Analyzer:   sideeffectnoresult.Analyzer,
+		},
+
 		// --- Batch 3: Timeouts & retries ---
 		{
 			Name:       missingretrypolicy.Analyzer.Name,
@@ -303,14 +407,12 @@ func rank(s Status) int {
 	switch s {
 	case StatusImplemented:
 		return 0
-	case StatusRuntimeImplemented:
-		return 1
 	case StatusPlanned:
-		return 2
+		return 1
 	case StatusRuntimeOnly:
-		return 3
+		return 2
 	case StatusDocOnly:
-		return 4
+		return 3
 	}
-	return 5
+	return 4
 }

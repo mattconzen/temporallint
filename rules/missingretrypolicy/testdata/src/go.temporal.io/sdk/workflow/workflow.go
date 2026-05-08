@@ -9,6 +9,7 @@ import "time"
 
 type Context interface {
 	Done() <-chan struct{}
+	Err() error
 }
 
 type ActivityOptions struct {
@@ -76,5 +77,20 @@ func GetSignalChannel(ctx Context, name string) Channel            { return nil 
 func ContinueAsNew(ctx Context, fn interface{}, args ...interface{}) error {
 	return nil
 }
+func Await(ctx Context, conds ...func() bool) error                { return nil }
+func AwaitWithTimeout(ctx Context, timeout time.Duration, cond func() bool) (bool, error) {
+	return false, nil
+}
+func NewDisconnectedContext(parent Context) (Context, func()) { return parent, func() {} }
+
+// Selector mirrors workflow.Selector for testdata stubs.
+type Selector interface {
+	AddReceive(c Channel, fn func(c Channel, more bool)) Selector
+	AddFuture(f Future, fn func(f Future)) Selector
+	Select(ctx Context)
+}
+
+func NewSelector(ctx Context) Selector { return nil }
+
 
 const DefaultVersion = -1

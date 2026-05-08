@@ -20,17 +20,7 @@ cancellation, design, ops) are tracked as `Planned` entries in `RULES.md`.
 
     # From the repo root (go.work joins this sub-module)
     go test ./tools/temporallint/...
-
-    # Static analysis against Go packages
     go run ./tools/temporallint/cmd/temporallint ./apps/...
-
-    # Runtime checks against a live Temporal server
-    go run ./tools/temporallint/cmd/temporallint runtime \
-        --address localhost:7233 --namespace default --since 24h
-
-The same binary handles both modes via argv dispatch: `runtime` as the
-first positional arg routes into the runtime subcommand, anything else
-(including `./...`) falls through to the static-analysis multichecker.
 
 ## Adding a rule
 
@@ -65,56 +55,17 @@ entry point. Wire it up with a `.custom-gcl.yml` at the repo root:
 Then `golangci-lint custom` builds a `custom-gcl` binary that includes
 every temporallint rule alongside golangci-lint's built-ins.
 
-## Runtime subcommand
-
-`temporallint runtime` connects to a Temporal server and verifies the
-mistakes that static analysis can't see — history size, event count,
-individual payload size, missing workflow timeouts. It paginates
-`ListWorkflowExecutions` over the configured time window and calls
-`DescribeWorkflowExecution` / `GetWorkflowHistory` per workflow.
-
-Flags:
-
-| Flag | Default | Notes |
-|------|---------|-------|
-| `--address` | `localhost:7233` | Temporal frontend gRPC address |
-| `--namespace` | `default` | Temporal namespace |
-| `--api-key` | `$TEMPORAL_API_KEY` | API key for Cloud or any gateway with API-key support |
-| `--task-queue` | (none) | Optional filter |
-| `--since` | `24h` | Look-back window |
-| `--threshold-config` | (none) | YAML override path; see `runtime/thresholds/default.yaml` |
-| `--output` | `text` | `text` or `json` |
-| `--fail-on` | `fail` | Minimum severity that triggers non-zero exit (`ok` / `warn` / `fail`) |
-
-Each finding includes the check name, severity, subject (workflowID/runID
-or event identifier), human message, and a link back to the corresponding
-section of [100-temporal-mistakes](https://github.com/jlegrone/100-temporal-mistakes).
-
-Tests use a hand-rolled `runtime/internal/fakeapi` test double rather than
-mockgen — every check has a TDD-inverted pair:
-`TestViolation` (synthetic API returns above-threshold response → expect
-`Severity=fail` Finding), `TestClean` (response within threshold → expect
-no Finding). Mirror of the static analyzers' `testdata/src/violation` /
-`testdata/src/clean` pattern.
-
 ## Layout
 
     tools/temporallint/
-      cmd/temporallint/      argv dispatcher (static multichecker + runtime)
+      cmd/temporallint/      multichecker entry point
       cmd/gen-rules/         generates RULES.md from all/ metadata
       plugin/                golangci-lint v2 module-plugin entry
       all/                   registry: Analyzers() + Registry()
       temporalctx/           shared helpers (workflow detection, rulekit)
-      rules/<rule>/          per-rule static-analysis directory
-      runtime/
-        cmd/                 runtime subcommand impl
-        all/                 registry of runtime.Check
-        checks/<name>/       per-check directory
-        thresholds/          defaults + YAML loader
-        internal/fakeapi/    test double for WorkflowAPI
-        internal/temporaladapter/   client.Client → WorkflowAPI bridge
+      rules/<rule>/          per-rule directory
       RULES.md               generated coverage table
-      go.mod                 sub-module — analyzer + Temporal deps don't leak into apps/
+      go.mod                 sub-module — analyzer deps don't leak into apps/
 
 ## Why a sub-module?
 
