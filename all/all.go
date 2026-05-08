@@ -11,7 +11,13 @@ import (
 
 	wfcheck "go.temporal.io/sdk/contrib/tools/workflowcheck/workflow"
 
+	"github.com/mattconzen/monorepo/tools/temporallint/rules/childworkflownotimeout"
+	"github.com/mattconzen/monorepo/tools/temporallint/rules/maxattemptsone"
+	"github.com/mattconzen/monorepo/tools/temporallint/rules/missingheartbeattimeout"
+	"github.com/mattconzen/monorepo/tools/temporallint/rules/missingretrypolicy"
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/missingstarttoclosetimeout"
+	"github.com/mattconzen/monorepo/tools/temporallint/rules/missingworkflowtimeout"
+	"github.com/mattconzen/monorepo/tools/temporallint/rules/preventretriesbytimeout"
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/strictglobalmutation"
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/strictgokeyword"
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/strictmakechan"
@@ -24,18 +30,25 @@ import (
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/stricttimeafter"
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/stricttimenow"
 	"github.com/mattconzen/monorepo/tools/temporallint/rules/stricttimesleep"
+	"github.com/mattconzen/monorepo/tools/temporallint/rules/unboundednoceiling"
+	"github.com/mattconzen/monorepo/tools/temporallint/rules/workflowretrypolicy"
 )
 
 // Status describes whether a documented mistake can be enforced statically.
 type Status string
 
 const (
-	// StatusImplemented means an Analyzer is wired up and emits diagnostics.
+	// StatusImplemented means a static Analyzer is wired up and emits diagnostics.
 	StatusImplemented Status = "Implemented"
+	// StatusRuntimeImplemented means a runtime check (under tools/temporallint/runtime)
+	// is wired up. Static analysis cannot detect the mistake; the runtime
+	// subcommand verifies it against a live Temporal server.
+	StatusRuntimeImplemented Status = "RuntimeImplemented"
 	// StatusPlanned means the rule is on the roadmap but not yet implemented.
 	StatusPlanned Status = "Planned"
-	// StatusRuntimeOnly means the mistake is only visible at runtime
-	// (history size, sync-match rate, STSL, etc.) so no static rule is possible.
+	// StatusRuntimeOnly means the mistake is only visible at runtime and no
+	// runtime check has been written yet (most often because it requires
+	// metrics scraping rather than SDK calls).
 	StatusRuntimeOnly Status = "RuntimeOnly"
 	// StatusDocOnly means the mistake is a design/process concern surfaced for
 	// awareness but not enforced.
@@ -177,6 +190,71 @@ func implemented() []Entry {
 			Summary:    "Flags `for range` over a map in workflow code (iteration order is random).",
 			Analyzer:   strictmaprange.Analyzer,
 		},
+		// --- Batch 3: Timeouts & retries ---
+		{
+			Name:       missingretrypolicy.Analyzer.Name,
+			Category:   CategoryTimeouts,
+			Status:     StatusImplemented,
+			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#preventing-activity-retries",
+			Summary:    "ActivityOptions should set RetryPolicy explicitly.",
+			Analyzer:   missingretrypolicy.Analyzer,
+		},
+		{
+			Name:       maxattemptsone.Analyzer.Name,
+			Category:   CategoryTimeouts,
+			Status:     StatusImplemented,
+			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#preventing-activity-retries",
+			Summary:    "RetryPolicy.MaximumAttempts == 1 silently disables retry.",
+			Analyzer:   maxattemptsone.Analyzer,
+		},
+		{
+			Name:       unboundednoceiling.Analyzer.Name,
+			Category:   CategoryTimeouts,
+			Status:     StatusImplemented,
+			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#preventing-activity-retries",
+			Summary:    "Unbounded RetryPolicy needs MaximumInterval ceiling.",
+			Analyzer:   unboundednoceiling.Analyzer,
+		},
+		{
+			Name:       preventretriesbytimeout.Analyzer.Name,
+			Category:   CategoryTimeouts,
+			Status:     StatusImplemented,
+			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#preventing-activity-retries",
+			Summary:    "ScheduleToCloseTimeout shorter than RetryPolicy.InitialInterval prevents retries.",
+			Analyzer:   preventretriesbytimeout.Analyzer,
+		},
+		{
+			Name:       missingheartbeattimeout.Analyzer.Name,
+			Category:   CategoryTimeouts,
+			Status:     StatusImplemented,
+			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#not-sending-heartbeats-from-activities",
+			Summary:    "Heartbeating activities require HeartbeatTimeout (heuristic).",
+			Analyzer:   missingheartbeattimeout.Analyzer,
+		},
+		{
+			Name:       missingworkflowtimeout.Analyzer.Name,
+			Category:   CategoryTimeouts,
+			Status:     StatusImplemented,
+			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#not-setting-a-workflow-timeout",
+			Summary:    "StartWorkflowOptions should set a workflow-level timeout.",
+			Analyzer:   missingworkflowtimeout.Analyzer,
+		},
+		{
+			Name:       childworkflownotimeout.Analyzer.Name,
+			Category:   CategoryTimeouts,
+			Status:     StatusImplemented,
+			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#not-setting-a-workflow-timeout",
+			Summary:    "ChildWorkflowOptions should set a workflow-level timeout.",
+			Analyzer:   childworkflownotimeout.Analyzer,
+		},
+		{
+			Name:       workflowretrypolicy.Analyzer.Name,
+			Category:   CategoryTimeouts,
+			Status:     StatusImplemented,
+			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#using-workflow-retries",
+			Summary:    "Avoid workflow-level RetryPolicy; retry inside activities.",
+			Analyzer:   workflowretrypolicy.Analyzer,
+		},
 		{
 			Name:       strictglobalmutation.Analyzer.Name,
 			Category:   CategoryReplay,
@@ -225,12 +303,14 @@ func rank(s Status) int {
 	switch s {
 	case StatusImplemented:
 		return 0
-	case StatusPlanned:
+	case StatusRuntimeImplemented:
 		return 1
-	case StatusRuntimeOnly:
+	case StatusPlanned:
 		return 2
-	case StatusDocOnly:
+	case StatusRuntimeOnly:
 		return 3
+	case StatusDocOnly:
+		return 4
 	}
-	return 4
+	return 5
 }

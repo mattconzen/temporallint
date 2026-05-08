@@ -1,0 +1,16 @@
+# Default thresholds for `temporallint runtime`. Copy this file, edit
+# the values you want to change, and pass --threshold-config=path/to/copy.yaml.
+# Any field omitted here keeps its built-in default (see thresholds.go:Defaults).
+
+history_bytes_warn: 52428800     # 50 MiB
+history_bytes_fail: 209715200    # 200 MiB
+
+history_events_warn: 10000
+history_events_fail: 50000       # server hard cap is 51200
+
+individual_payload_warn: 2097152 # 2 MiB
+individual_payload_fail: 4194304 # 4 MiB (server limit)
+
+no_workflow_timeout_after: 8760h # 365 days
+
+sample_history_events: 256
