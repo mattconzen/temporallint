@@ -16,6 +16,8 @@ import (
 	"github.com/mattconzen/temporallint/rules/activitymissingcontext"
 	"github.com/mattconzen/temporallint/rules/awaitnotimeout"
 	"github.com/mattconzen/temporallint/rules/childworkflownotimeout"
+	"github.com/mattconzen/temporallint/rules/expensiveworkflowcomputation"
+	"github.com/mattconzen/temporallint/rules/localactivitymisuse"
 	"github.com/mattconzen/temporallint/rules/missingdisconnectedcontextcleanup"
 	"github.com/mattconzen/temporallint/rules/maxattemptsone"
 	"github.com/mattconzen/temporallint/rules/missingheartbeattimeout"
@@ -23,7 +25,11 @@ import (
 	"github.com/mattconzen/temporallint/rules/missingretrypolicy"
 	"github.com/mattconzen/temporallint/rules/missingstarttoclosetimeout"
 	"github.com/mattconzen/temporallint/rules/missingworkflowtimeout"
+	"github.com/mattconzen/temporallint/rules/multipleinputpayloads"
 	"github.com/mattconzen/temporallint/rules/nogracefuldrain"
+	"github.com/mattconzen/temporallint/rules/noheartbeatdetails"
+	"github.com/mattconzen/temporallint/rules/noparentclosepolicy"
+	"github.com/mattconzen/temporallint/rules/noreplayvalidation"
 	"github.com/mattconzen/temporallint/rules/oversizedpayloadreturn"
 	"github.com/mattconzen/temporallint/rules/payloadanderror"
 	"github.com/mattconzen/temporallint/rules/pollingloopwithsleep"
@@ -32,6 +38,7 @@ import (
 	"github.com/mattconzen/temporallint/rules/searchattributetyping"
 	"github.com/mattconzen/temporallint/rules/sideeffectnoresult"
 	"github.com/mattconzen/temporallint/rules/signalchanneloutsideselector"
+	"github.com/mattconzen/temporallint/rules/signaldrainmissing"
 	"github.com/mattconzen/temporallint/rules/signalhandlerblocksonactivity"
 	"github.com/mattconzen/temporallint/rules/startworkflowbadtaskqueue"
 	"github.com/mattconzen/temporallint/rules/startworkflowfromactivity"
@@ -49,6 +56,7 @@ import (
 	"github.com/mattconzen/temporallint/rules/stricttimesleep"
 	"github.com/mattconzen/temporallint/rules/terminatevscancel"
 	"github.com/mattconzen/temporallint/rules/toomanyactivitytypes"
+	"github.com/mattconzen/temporallint/rules/tooshorttimeouts"
 	"github.com/mattconzen/temporallint/rules/unboundedloopnocnaw"
 	"github.com/mattconzen/temporallint/rules/unboundednoceiling"
 	"github.com/mattconzen/temporallint/rules/unhandledctxerr"
@@ -218,6 +226,40 @@ func implemented() []Entry {
 			Summary:    "Flags `for range` over a map in workflow code (iteration order is random).",
 			Analyzer:   strictmaprange.Analyzer,
 		},
+		// --- Batch 8: planned-rule cleanup ---
+		{Name: noparentclosepolicy.Analyzer.Name, Category: CategoryCancellation, Status: StatusImplemented,
+			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#not-using-parentclosepolicy",
+			Summary:    "ChildWorkflowOptions should set ParentClosePolicy explicitly.",
+			Analyzer:   noparentclosepolicy.Analyzer},
+		{Name: tooshorttimeouts.Analyzer.Name, Category: CategoryTimeouts, Status: StatusImplemented,
+			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#setting-too-short-timeouts",
+			Summary:    "ActivityOptions timeouts shorter than the threshold (default 1s) cause false retries.",
+			Analyzer:   tooshorttimeouts.Analyzer},
+		{Name: multipleinputpayloads.Analyzer.Name, Category: CategoryDesign, Status: StatusImplemented,
+			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#using-multiple-inputresponse-payloads",
+			Summary:    "Workflow functions should take workflow.Context plus at most one input struct.",
+			Analyzer:   multipleinputpayloads.Analyzer},
+		{Name: noheartbeatdetails.Analyzer.Name, Category: CategoryDesign, Status: StatusImplemented,
+			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#not-using-activity-heartbeat-details",
+			Summary:    "activity.RecordHeartbeat should pass resumption details.",
+			Analyzer:   noheartbeatdetails.Analyzer},
+		{Name: signaldrainmissing.Analyzer.Name, Category: CategoryDesign, Status: StatusImplemented,
+			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#not-draining-signals-before-completing",
+			Summary:    "Workflows that read signals should drain Selector.HasPending before returning (heuristic).",
+			Analyzer:   signaldrainmissing.Analyzer},
+		{Name: localactivitymisuse.Analyzer.Name, Category: CategoryDesign, Status: StatusImplemented,
+			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#using-local-activities",
+			Summary:    "Flags workflow.LocalActivityOptions / workflow.ExecuteLocalActivity; reach for regular activities first.",
+			Analyzer:   localactivitymisuse.Analyzer},
+		{Name: expensiveworkflowcomputation.Analyzer.Name, Category: CategoryReplay, Status: StatusImplemented,
+			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#performing-expensive-computation-in-workflow-code",
+			Summary:    "Bans a narrow allowlist of expensive stdlib calls (hashing, JSON, gzip, regexp.Compile) inside workflow code.",
+			Analyzer:   expensiveworkflowcomputation.Analyzer},
+		{Name: noreplayvalidation.Analyzer.Name, Category: CategoryOperations, Status: StatusImplemented,
+			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#not-validating-replay-safety-before-deployments",
+			Summary:    "Packages with workflow definitions should also have a replay test (default-off).",
+			Analyzer:   noreplayvalidation.Analyzer},
+
 		// --- Batch 7: Operations + soft-flag promotions ---
 		{Name: nogracefuldrain.Analyzer.Name, Category: CategoryOperations, Status: StatusImplemented,
 			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#not-draining-activity-tasks-before-shutdown",

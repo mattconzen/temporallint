@@ -17,3 +17,11 @@ type Worker interface {
 
 func New(c interface{}, taskQueue string, options Options) Worker { return nil }
 func InterruptCh() <-chan interface{}                             { return nil }
+
+// WorkflowReplayer mirrors worker.WorkflowReplayer for replay tests.
+type WorkflowReplayer interface {
+	RegisterWorkflow(workflow interface{})
+	ReplayWorkflowHistory(logger interface{}, history interface{}) error
+}
+
+func NewWorkflowReplayer() WorkflowReplayer { return nil }
