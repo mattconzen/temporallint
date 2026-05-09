@@ -51,6 +51,7 @@ Status legend:
 | `stricttimesleep` | Workflow Replay | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#using-system-time-instead-of-workflow-time) |
 | `terminatevscancel` | Operations | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#terminating-rather-than-canceling) |
 | `toomanyactivitytypes` | Software Design | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#doing-too-many-things-in-one-workflow) |
+| `tooshorttimeouts` | Timeouts & Retries | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#setting-too-short-timeouts) |
 | `unboundedloopnocnaw` | Software Design | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#not-using-continueasnew) |
 | `unboundednoceiling` | Timeouts & Retries | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#preventing-activity-retries) |
 | `unhandledctxerr` | Cancellation | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#deadlocking-when-workflow-canceled) |
@@ -73,7 +74,6 @@ Status legend:
 | `no-replay-validation` | Operations | Planned | [link](https://github.com/jlegrone/100-temporal-mistakes#not-validating-replay-safety-before-deployments) |
 | `polling-loop-in-workflow` | Software Design | Planned | [link](https://github.com/jlegrone/100-temporal-mistakes#writing-polling-loops-in-workflow-code) |
 | `signal-drain-missing` | Software Design | Planned | [link](https://github.com/jlegrone/100-temporal-mistakes#not-draining-signals-before-completing) |
-| `too-short-timeouts` | Timeouts & Retries | Planned | [link](https://github.com/jlegrone/100-temporal-mistakes#setting-too-short-timeouts) |
 | `wrong-task-queue` | Other | Planned | [link](https://github.com/jlegrone/100-temporal-mistakes#starting-workflows-on-wrong-task-queue) |
 | `exceeding-task-timeout` | Workflow Limits | RuntimeOnly | [link](https://github.com/jlegrone/100-temporal-mistakes#exceeding-10s-task-timeout) |
 | `no-stsl-monitoring` | Operations | RuntimeOnly | [link](https://github.com/jlegrone/100-temporal-mistakes#not-monitoring-stsl) |

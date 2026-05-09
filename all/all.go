@@ -50,6 +50,7 @@ import (
 	"github.com/mattconzen/temporallint/rules/stricttimesleep"
 	"github.com/mattconzen/temporallint/rules/terminatevscancel"
 	"github.com/mattconzen/temporallint/rules/toomanyactivitytypes"
+	"github.com/mattconzen/temporallint/rules/tooshorttimeouts"
 	"github.com/mattconzen/temporallint/rules/unboundedloopnocnaw"
 	"github.com/mattconzen/temporallint/rules/unboundednoceiling"
 	"github.com/mattconzen/temporallint/rules/unhandledctxerr"
@@ -219,11 +220,15 @@ func implemented() []Entry {
 			Summary:    "Flags `for range` over a map in workflow code (iteration order is random).",
 			Analyzer:   strictmaprange.Analyzer,
 		},
-		// --- Batch 8: planned-rule cleanup (cancellation) ---
+		// --- Batch 8: planned-rule cleanup (cancellation, timeouts) ---
 		{Name: noparentclosepolicy.Analyzer.Name, Category: CategoryCancellation, Status: StatusImplemented,
 			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#not-using-parentclosepolicy",
 			Summary:    "ChildWorkflowOptions should set ParentClosePolicy explicitly.",
 			Analyzer:   noparentclosepolicy.Analyzer},
+		{Name: tooshorttimeouts.Analyzer.Name, Category: CategoryTimeouts, Status: StatusImplemented,
+			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#setting-too-short-timeouts",
+			Summary:    "ActivityOptions timeouts shorter than the threshold (default 1s) cause false retries.",
+			Analyzer:   tooshorttimeouts.Analyzer},
 
 		// --- Batch 7: Operations + soft-flag promotions ---
 		{Name: nogracefuldrain.Analyzer.Name, Category: CategoryOperations, Status: StatusImplemented,
