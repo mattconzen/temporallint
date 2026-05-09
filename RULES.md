@@ -25,6 +25,7 @@ Status legend:
 | `missingstarttoclosetimeout` | Timeouts & Retries | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#preventing-activity-retries) |
 | `missingworkflowtimeout` | Timeouts & Retries | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#not-setting-a-workflow-timeout) |
 | `nogracefuldrain` | Operations | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#not-draining-activity-tasks-before-shutdown) |
+| `noparentclosepolicy` | Cancellation | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#not-using-parentclosepolicy) |
 | `oversizedpayloadreturn` | Software Design | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#passing-too-much-information-from-activities) |
 | `payloadanderror` | Software Design | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#returning-both-payload-and-error) |
 | `pollingloopwithsleep` | Software Design | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#writing-polling-loops-in-workflow-code) |
@@ -64,18 +65,14 @@ Status legend:
 | `individual-payload-overflow` | Workflow Limits | RuntimeImplemented | [link](https://github.com/jlegrone/100-temporal-mistakes#overflowing-maximum-individual-payload-size) |
 | `no-workflow-timeout` | Timeouts & Retries | RuntimeImplemented | [link](https://github.com/jlegrone/100-temporal-mistakes#not-setting-a-workflow-timeout) |
 | `breaking-payload-changes` | Workflow Replay | Planned | [link](https://github.com/jlegrone/100-temporal-mistakes#breaking-changes-to-payloads) |
-| `deadlock-on-cancel` | Cancellation | Planned | [link](https://github.com/jlegrone/100-temporal-mistakes#deadlocking-when-workflow-canceled) |
 | `expensive-workflow-computation` | Workflow Replay | Planned | [link](https://github.com/jlegrone/100-temporal-mistakes#performing-expensive-computation-in-workflow-code) |
 | `local-activity-misuse` | Software Design | Planned | [link](https://github.com/jlegrone/100-temporal-mistakes#using-local-activities) |
 | `multiple-input-payloads` | Software Design | Planned | [link](https://github.com/jlegrone/100-temporal-mistakes#using-multiple-inputresponse-payloads) |
 | `no-continue-as-new` | Software Design | Planned | [link](https://github.com/jlegrone/100-temporal-mistakes#not-using-continueasnew) |
-| `no-disconnected-context` | Cancellation | Planned | [link](https://github.com/jlegrone/100-temporal-mistakes#not-using-disconnected-context-for-cleanup) |
 | `no-heartbeat-details` | Software Design | Planned | [link](https://github.com/jlegrone/100-temporal-mistakes#not-using-activity-heartbeat-details) |
-| `no-parent-close-policy` | Cancellation | Planned | [link](https://github.com/jlegrone/100-temporal-mistakes#not-using-parentclosepolicy) |
 | `no-replay-validation` | Operations | Planned | [link](https://github.com/jlegrone/100-temporal-mistakes#not-validating-replay-safety-before-deployments) |
 | `polling-loop-in-workflow` | Software Design | Planned | [link](https://github.com/jlegrone/100-temporal-mistakes#writing-polling-loops-in-workflow-code) |
 | `signal-drain-missing` | Software Design | Planned | [link](https://github.com/jlegrone/100-temporal-mistakes#not-draining-signals-before-completing) |
-| `start-workflow-from-activity` | Software Design | Planned | [link](https://github.com/jlegrone/100-temporal-mistakes#starting-workflows-from-activities) |
 | `too-short-timeouts` | Timeouts & Retries | Planned | [link](https://github.com/jlegrone/100-temporal-mistakes#setting-too-short-timeouts) |
 | `wrong-task-queue` | Other | Planned | [link](https://github.com/jlegrone/100-temporal-mistakes#starting-workflows-on-wrong-task-queue) |
 | `exceeding-task-timeout` | Workflow Limits | RuntimeOnly | [link](https://github.com/jlegrone/100-temporal-mistakes#exceeding-10s-task-timeout) |
@@ -84,6 +81,7 @@ Status legend:
 | `shard-contention` | Workflow Limits | RuntimeOnly | [link](https://github.com/jlegrone/100-temporal-mistakes#shard-contention-due-to-concurrent-updates) |
 | `activity-vs-workflow-cancel` | Cancellation | DocOnly | [link](https://github.com/jlegrone/100-temporal-mistakes#assuming-activity-cancellation-means-workflow-cancellation) |
 | `custom-task-orchestration` | Software Design | DocOnly | [link](https://github.com/jlegrone/100-temporal-mistakes#custom-task-orchestration-frameworks) |
+| `deadlock-on-cancel` | Cancellation | DocOnly | [link](https://github.com/jlegrone/100-temporal-mistakes#deadlocking-when-workflow-canceled) |
 | `decode-payloads-in-history-export` | Operations | DocOnly | [link](https://github.com/jlegrone/100-temporal-mistakes#downloading-history-with-decodepayloads-enabled) |
 | `fallible-local-activity` | Software Design | DocOnly | [link](https://github.com/jlegrone/100-temporal-mistakes#fallible-local-activities) |
 | `history-modifying-interceptor` | Workflow Replay | DocOnly | [link](https://github.com/jlegrone/100-temporal-mistakes#modifying-workflow-history-in-interceptors) |

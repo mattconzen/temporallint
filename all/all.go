@@ -24,6 +24,7 @@ import (
 	"github.com/mattconzen/temporallint/rules/missingstarttoclosetimeout"
 	"github.com/mattconzen/temporallint/rules/missingworkflowtimeout"
 	"github.com/mattconzen/temporallint/rules/nogracefuldrain"
+	"github.com/mattconzen/temporallint/rules/noparentclosepolicy"
 	"github.com/mattconzen/temporallint/rules/oversizedpayloadreturn"
 	"github.com/mattconzen/temporallint/rules/payloadanderror"
 	"github.com/mattconzen/temporallint/rules/pollingloopwithsleep"
@@ -218,6 +219,12 @@ func implemented() []Entry {
 			Summary:    "Flags `for range` over a map in workflow code (iteration order is random).",
 			Analyzer:   strictmaprange.Analyzer,
 		},
+		// --- Batch 8: planned-rule cleanup (cancellation) ---
+		{Name: noparentclosepolicy.Analyzer.Name, Category: CategoryCancellation, Status: StatusImplemented,
+			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#not-using-parentclosepolicy",
+			Summary:    "ChildWorkflowOptions should set ParentClosePolicy explicitly.",
+			Analyzer:   noparentclosepolicy.Analyzer},
+
 		// --- Batch 7: Operations + soft-flag promotions ---
 		{Name: nogracefuldrain.Analyzer.Name, Category: CategoryOperations, Status: StatusImplemented,
 			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#not-draining-activity-tasks-before-shutdown",
