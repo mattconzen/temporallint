@@ -5,7 +5,7 @@ import (
 
 	"golang.org/x/tools/go/analysis/analysistest"
 
-	"github.com/mattconzen/monorepo/tools/temporallint/rules/missingdisconnectedcontextcleanup"
+	"github.com/mattconzen/temporallint/rules/missingdisconnectedcontextcleanup"
 )
 
 func TestAnalyzer(t *testing.T) {

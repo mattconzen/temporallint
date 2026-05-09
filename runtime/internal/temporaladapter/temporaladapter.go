@@ -14,7 +14,7 @@ import (
 	"go.temporal.io/api/workflowservice/v1"
 	"go.temporal.io/sdk/client"
 
-	"github.com/mattconzen/monorepo/tools/temporallint/runtime"
+	"github.com/mattconzen/temporallint/runtime"
 )
 
 // Adapter is a runtime.WorkflowAPI implementation backed by a real

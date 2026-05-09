@@ -5,7 +5,7 @@ import (
 
 	"golang.org/x/tools/go/analysis/analysistest"
 
-	"github.com/mattconzen/monorepo/tools/temporallint/rules/queryhandlerwithsideeffects"
+	"github.com/mattconzen/temporallint/rules/queryhandlerwithsideeffects"
 )
 
 func TestAnalyzer(t *testing.T) {

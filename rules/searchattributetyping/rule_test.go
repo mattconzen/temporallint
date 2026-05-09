@@ -5,7 +5,7 @@ import (
 
 	"golang.org/x/tools/go/analysis/analysistest"
 
-	"github.com/mattconzen/monorepo/tools/temporallint/rules/searchattributetyping"
+	"github.com/mattconzen/temporallint/rules/searchattributetyping"
 )
 
 func TestAnalyzer(t *testing.T) {

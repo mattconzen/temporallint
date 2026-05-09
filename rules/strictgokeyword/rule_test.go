@@ -5,7 +5,7 @@ import (
 
 	"golang.org/x/tools/go/analysis/analysistest"
 
-	"github.com/mattconzen/monorepo/tools/temporallint/rules/strictgokeyword"
+	"github.com/mattconzen/temporallint/rules/strictgokeyword"
 )
 
 func TestAnalyzer(t *testing.T) {

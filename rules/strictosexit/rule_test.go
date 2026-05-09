@@ -5,7 +5,7 @@ import (
 
 	"golang.org/x/tools/go/analysis/analysistest"
 
-	"github.com/mattconzen/monorepo/tools/temporallint/rules/strictosexit"
+	"github.com/mattconzen/temporallint/rules/strictosexit"
 )
 
 func TestAnalyzer(t *testing.T) {

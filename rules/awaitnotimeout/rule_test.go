@@ -5,7 +5,7 @@ import (
 
 	"golang.org/x/tools/go/analysis/analysistest"
 
-	"github.com/mattconzen/monorepo/tools/temporallint/rules/awaitnotimeout"
+	"github.com/mattconzen/temporallint/rules/awaitnotimeout"
 )
 
 func TestAnalyzer(t *testing.T) {

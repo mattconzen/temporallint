@@ -7,11 +7,11 @@ package all
 import (
 	"sort"
 
-	"github.com/mattconzen/monorepo/tools/temporallint/runtime"
-	"github.com/mattconzen/monorepo/tools/temporallint/runtime/checks/historybytes"
-	"github.com/mattconzen/monorepo/tools/temporallint/runtime/checks/historyevents"
-	"github.com/mattconzen/monorepo/tools/temporallint/runtime/checks/individualpayload"
-	"github.com/mattconzen/monorepo/tools/temporallint/runtime/checks/noworkflowtimeout"
+	"github.com/mattconzen/temporallint/runtime"
+	"github.com/mattconzen/temporallint/runtime/checks/historybytes"
+	"github.com/mattconzen/temporallint/runtime/checks/historyevents"
+	"github.com/mattconzen/temporallint/runtime/checks/individualpayload"
+	"github.com/mattconzen/temporallint/runtime/checks/noworkflowtimeout"
 )
 
 // Checks returns the deduplicated, name-sorted list of every runtime

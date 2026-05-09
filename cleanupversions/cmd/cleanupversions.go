@@ -16,10 +16,10 @@ import (
 
 	"go.temporal.io/sdk/client"
 
-	"github.com/mattconzen/monorepo/tools/temporallint/cleanupversions"
-	cuvruntime "github.com/mattconzen/monorepo/tools/temporallint/cleanupversions/runtime"
-	"github.com/mattconzen/monorepo/tools/temporallint/cleanupversions/rewriter"
-	"github.com/mattconzen/monorepo/tools/temporallint/cleanupversions/static"
+	"github.com/mattconzen/temporallint/cleanupversions"
+	cuvruntime "github.com/mattconzen/temporallint/cleanupversions/runtime"
+	"github.com/mattconzen/temporallint/cleanupversions/rewriter"
+	"github.com/mattconzen/temporallint/cleanupversions/static"
 )
 
 // Main is the entry point. Returns the process exit code.

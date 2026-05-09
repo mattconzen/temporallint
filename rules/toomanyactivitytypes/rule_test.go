@@ -5,7 +5,7 @@ import (
 
 	"golang.org/x/tools/go/analysis/analysistest"
 
-	"github.com/mattconzen/monorepo/tools/temporallint/rules/toomanyactivitytypes"
+	"github.com/mattconzen/temporallint/rules/toomanyactivitytypes"
 )
 
 func TestAnalyzer(t *testing.T) {

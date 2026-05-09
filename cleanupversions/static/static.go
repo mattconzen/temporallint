@@ -12,7 +12,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/mattconzen/monorepo/tools/temporallint/cleanupversions"
+	"github.com/mattconzen/temporallint/cleanupversions"
 )
 
 // Discover walks files under root (recursively), parses every .go

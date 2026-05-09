@@ -4,10 +4,10 @@ import (
 	"context"
 	"testing"
 
-	"github.com/mattconzen/monorepo/tools/temporallint/cleanupversions"
-	cuvruntime "github.com/mattconzen/monorepo/tools/temporallint/cleanupversions/runtime"
-	"github.com/mattconzen/monorepo/tools/temporallint/runtime"
-	"github.com/mattconzen/monorepo/tools/temporallint/runtime/fakeapi"
+	"github.com/mattconzen/temporallint/cleanupversions"
+	cuvruntime "github.com/mattconzen/temporallint/cleanupversions/runtime"
+	"github.com/mattconzen/temporallint/runtime"
+	"github.com/mattconzen/temporallint/runtime/fakeapi"
 )
 
 func TestSafe(t *testing.T) {

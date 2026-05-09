@@ -1,4 +1,4 @@
-module github.com/mattconzen/monorepo/tools/temporallint
+module github.com/mattconzen/temporallint
 
 go 1.25.0
 

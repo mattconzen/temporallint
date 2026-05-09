@@ -8,8 +8,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/mattconzen/monorepo/tools/temporallint/all"
-	"github.com/mattconzen/monorepo/tools/temporallint/runtime"
+	"github.com/mattconzen/temporallint/all"
+	"github.com/mattconzen/temporallint/runtime"
 )
 
 const (

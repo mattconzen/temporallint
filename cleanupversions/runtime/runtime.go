@@ -8,8 +8,8 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/mattconzen/monorepo/tools/temporallint/cleanupversions"
-	rt "github.com/mattconzen/monorepo/tools/temporallint/runtime"
+	"github.com/mattconzen/temporallint/cleanupversions"
+	rt "github.com/mattconzen/temporallint/runtime"
 )
 
 // Verifier classifies each Candidate as Safe / Unsafe / Indeterminate

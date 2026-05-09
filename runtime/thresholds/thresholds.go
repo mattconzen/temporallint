@@ -11,7 +11,7 @@ import (
 
 	"gopkg.in/yaml.v2"
 
-	"github.com/mattconzen/monorepo/tools/temporallint/runtime"
+	"github.com/mattconzen/temporallint/runtime"
 )
 
 // Defaults returns the baseline thresholds. Any zero field in the

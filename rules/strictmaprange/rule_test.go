@@ -5,7 +5,7 @@ import (
 
 	"golang.org/x/tools/go/analysis/analysistest"
 
-	"github.com/mattconzen/monorepo/tools/temporallint/rules/strictmaprange"
+	"github.com/mattconzen/temporallint/rules/strictmaprange"
 )
 
 func TestAnalyzer(t *testing.T) {

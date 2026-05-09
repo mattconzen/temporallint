@@ -6,9 +6,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/mattconzen/monorepo/tools/temporallint/cleanupversions"
-	"github.com/mattconzen/monorepo/tools/temporallint/cleanupversions/rewriter"
-	"github.com/mattconzen/monorepo/tools/temporallint/cleanupversions/static"
+	"github.com/mattconzen/temporallint/cleanupversions"
+	"github.com/mattconzen/temporallint/cleanupversions/rewriter"
+	"github.com/mattconzen/temporallint/cleanupversions/static"
 )
 
 const wfSrc = `package wf

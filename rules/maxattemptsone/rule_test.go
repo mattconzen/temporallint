@@ -5,7 +5,7 @@ import (
 
 	"golang.org/x/tools/go/analysis/analysistest"
 
-	"github.com/mattconzen/monorepo/tools/temporallint/rules/maxattemptsone"
+	"github.com/mattconzen/temporallint/rules/maxattemptsone"
 )
 
 func TestAnalyzer(t *testing.T) {

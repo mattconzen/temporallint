@@ -8,7 +8,7 @@ import (
 	"go.temporal.io/api/workflowservice/v1"
 	"go.temporal.io/sdk/client"
 
-	"github.com/mattconzen/monorepo/tools/temporallint/runtime"
+	"github.com/mattconzen/temporallint/runtime"
 )
 
 // versionAdapter implements runtime.VersionAPI on top of a real

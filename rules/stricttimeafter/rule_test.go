@@ -5,7 +5,7 @@ import (
 
 	"golang.org/x/tools/go/analysis/analysistest"
 
-	"github.com/mattconzen/monorepo/tools/temporallint/rules/stricttimeafter"
+	"github.com/mattconzen/temporallint/rules/stricttimeafter"
 )
 
 func TestAnalyzer(t *testing.T) {

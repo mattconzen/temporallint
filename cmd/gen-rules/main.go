@@ -11,7 +11,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/mattconzen/monorepo/tools/temporallint/all"
+	"github.com/mattconzen/temporallint/all"
 )
 
 func main() {

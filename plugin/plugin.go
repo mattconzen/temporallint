@@ -6,14 +6,14 @@
 //
 //	version: v2.0.0
 //	plugins:
-//	  - module: github.com/mattconzen/monorepo/tools/temporallint
+//	  - module: github.com/mattconzen/temporallint
 //	    path: ./tools/temporallint
 package plugin
 
 import (
 	"golang.org/x/tools/go/analysis"
 
-	"github.com/mattconzen/monorepo/tools/temporallint/all"
+	"github.com/mattconzen/temporallint/all"
 )
 
 // New is the well-known entry point golangci-lint expects for module

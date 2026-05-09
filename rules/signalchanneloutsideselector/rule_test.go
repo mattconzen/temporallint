@@ -5,7 +5,7 @@ import (
 
 	"golang.org/x/tools/go/analysis/analysistest"
 
-	"github.com/mattconzen/monorepo/tools/temporallint/rules/signalchanneloutsideselector"
+	"github.com/mattconzen/temporallint/rules/signalchanneloutsideselector"
 )
 
 func TestAnalyzer(t *testing.T) {

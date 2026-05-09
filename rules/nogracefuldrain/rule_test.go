@@ -5,7 +5,7 @@ import (
 
 	"golang.org/x/tools/go/analysis/analysistest"
 
-	"github.com/mattconzen/monorepo/tools/temporallint/rules/nogracefuldrain"
+	"github.com/mattconzen/temporallint/rules/nogracefuldrain"
 )
 
 func TestAnalyzer(t *testing.T) {

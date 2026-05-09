@@ -59,7 +59,7 @@ entry point. Wire it up with a `.custom-gcl.yml` at the repo root:
 
     version: v2.0.0
     plugins:
-      - module: github.com/mattconzen/monorepo/tools/temporallint
+      - module: github.com/mattconzen/temporallint
         path: ./tools/temporallint
 
 Then `golangci-lint custom` builds a `custom-gcl` binary that includes

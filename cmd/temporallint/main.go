@@ -18,10 +18,10 @@ import (
 
 	"golang.org/x/tools/go/analysis/multichecker"
 
-	"github.com/mattconzen/monorepo/tools/temporallint/all"
-	cleanupcmd "github.com/mattconzen/monorepo/tools/temporallint/cleanupversions/cmd"
-	"github.com/mattconzen/monorepo/tools/temporallint/hookcmd"
-	runtimecmd "github.com/mattconzen/monorepo/tools/temporallint/runtime/cmd"
+	"github.com/mattconzen/temporallint/all"
+	cleanupcmd "github.com/mattconzen/temporallint/cleanupversions/cmd"
+	"github.com/mattconzen/temporallint/hookcmd"
+	runtimecmd "github.com/mattconzen/temporallint/runtime/cmd"
 )
 
 func main() {

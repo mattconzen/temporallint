@@ -22,10 +22,10 @@ import (
 
 	"go.temporal.io/sdk/client"
 
-	"github.com/mattconzen/monorepo/tools/temporallint/runtime"
-	runtimeall "github.com/mattconzen/monorepo/tools/temporallint/runtime/all"
-	"github.com/mattconzen/monorepo/tools/temporallint/runtime/internal/temporaladapter"
-	"github.com/mattconzen/monorepo/tools/temporallint/runtime/thresholds"
+	"github.com/mattconzen/temporallint/runtime"
+	runtimeall "github.com/mattconzen/temporallint/runtime/all"
+	"github.com/mattconzen/temporallint/runtime/internal/temporaladapter"
+	"github.com/mattconzen/temporallint/runtime/thresholds"
 )
 
 // Main is the entry point. It returns the process exit code rather than

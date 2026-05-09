@@ -5,7 +5,7 @@ import (
 
 	"golang.org/x/tools/go/analysis/analysistest"
 
-	"github.com/mattconzen/monorepo/tools/temporallint/rules/workflowretrypolicy"
+	"github.com/mattconzen/temporallint/rules/workflowretrypolicy"
 )
 
 func TestAnalyzer(t *testing.T) {

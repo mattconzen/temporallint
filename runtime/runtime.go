@@ -14,7 +14,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/mattconzen/monorepo/tools/temporallint/all"
+	"github.com/mattconzen/temporallint/all"
 )
 
 // Severity orders findings by how badly they should fail a CI run.

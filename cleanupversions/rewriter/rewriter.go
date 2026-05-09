@@ -14,7 +14,7 @@ import (
 	"path/filepath"
 	"sort"
 
-	"github.com/mattconzen/monorepo/tools/temporallint/cleanupversions"
+	"github.com/mattconzen/temporallint/cleanupversions"
 )
 
 // Apply applies the Edits from each Safe report to disk. Reports

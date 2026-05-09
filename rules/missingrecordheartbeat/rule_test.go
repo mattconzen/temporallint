@@ -5,7 +5,7 @@ import (
 
 	"golang.org/x/tools/go/analysis/analysistest"
 
-	"github.com/mattconzen/monorepo/tools/temporallint/rules/missingrecordheartbeat"
+	"github.com/mattconzen/temporallint/rules/missingrecordheartbeat"
 )
 
 func TestAnalyzer(t *testing.T) {

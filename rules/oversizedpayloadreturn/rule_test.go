@@ -5,7 +5,7 @@ import (
 
 	"golang.org/x/tools/go/analysis/analysistest"
 
-	"github.com/mattconzen/monorepo/tools/temporallint/rules/oversizedpayloadreturn"
+	"github.com/mattconzen/temporallint/rules/oversizedpayloadreturn"
 )
 
 func TestAnalyzer(t *testing.T) {

@@ -5,7 +5,7 @@ import (
 
 	"golang.org/x/tools/go/analysis/analysistest"
 
-	"github.com/mattconzen/monorepo/tools/temporallint/rules/childworkflownotimeout"
+	"github.com/mattconzen/temporallint/rules/childworkflownotimeout"
 )
 
 func TestAnalyzer(t *testing.T) {

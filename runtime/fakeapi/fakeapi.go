@@ -8,7 +8,7 @@ package fakeapi
 import (
 	"context"
 
-	"github.com/mattconzen/monorepo/tools/temporallint/runtime"
+	"github.com/mattconzen/temporallint/runtime"
 )
 
 // API is a configurable, single-namespace fake implementation of

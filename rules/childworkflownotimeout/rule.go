@@ -11,7 +11,7 @@ import (
 	"golang.org/x/tools/go/analysis/passes/inspect"
 	"golang.org/x/tools/go/ast/inspector"
 
-	"github.com/mattconzen/monorepo/tools/temporallint/temporalctx"
+	"github.com/mattconzen/temporallint/temporalctx"
 )
 
 var Analyzer = &analysis.Analyzer{

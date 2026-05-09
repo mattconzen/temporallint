@@ -5,10 +5,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/mattconzen/monorepo/tools/temporallint/runtime"
-	"github.com/mattconzen/monorepo/tools/temporallint/runtime/checks/historybytes"
-	"github.com/mattconzen/monorepo/tools/temporallint/runtime/fakeapi"
-	"github.com/mattconzen/monorepo/tools/temporallint/runtime/thresholds"
+	"github.com/mattconzen/temporallint/runtime"
+	"github.com/mattconzen/temporallint/runtime/checks/historybytes"
+	"github.com/mattconzen/temporallint/runtime/fakeapi"
+	"github.com/mattconzen/temporallint/runtime/thresholds"
 )
 
 // TestViolation is the TDD-red half: synthetic API returns a workflow
