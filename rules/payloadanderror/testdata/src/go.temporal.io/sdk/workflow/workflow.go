@@ -54,11 +54,15 @@ type Future interface {
 	IsReady() bool
 }
 
-func WithActivityOptions(ctx Context, options ActivityOptions) Context { return ctx }
+func WithActivityOptions(ctx Context, options ActivityOptions) Context           { return ctx }
+func WithLocalActivityOptions(ctx Context, options LocalActivityOptions) Context { return ctx }
 func WithChildWorkflowOptions(ctx Context, options ChildWorkflowOptions) Context {
 	return ctx
 }
 func ExecuteActivity(ctx Context, activity interface{}, args ...interface{}) Future {
+	return nil
+}
+func ExecuteLocalActivity(ctx Context, activity interface{}, args ...interface{}) Future {
 	return nil
 }
 func ExecuteChildWorkflow(ctx Context, child interface{}, args ...interface{}) Future {
@@ -88,6 +92,7 @@ type Selector interface {
 	AddReceive(c Channel, fn func(c Channel, more bool)) Selector
 	AddFuture(f Future, fn func(f Future)) Selector
 	Select(ctx Context)
+	HasPending() bool
 }
 
 func NewSelector(ctx Context) Selector { return nil }
