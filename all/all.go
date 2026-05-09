@@ -16,6 +16,7 @@ import (
 	"github.com/mattconzen/temporallint/rules/activitymissingcontext"
 	"github.com/mattconzen/temporallint/rules/awaitnotimeout"
 	"github.com/mattconzen/temporallint/rules/childworkflownotimeout"
+	"github.com/mattconzen/temporallint/rules/expensiveworkflowcomputation"
 	"github.com/mattconzen/temporallint/rules/localactivitymisuse"
 	"github.com/mattconzen/temporallint/rules/missingdisconnectedcontextcleanup"
 	"github.com/mattconzen/temporallint/rules/maxattemptsone"
@@ -249,6 +250,10 @@ func implemented() []Entry {
 			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#using-local-activities",
 			Summary:    "Flags workflow.LocalActivityOptions / workflow.ExecuteLocalActivity; reach for regular activities first.",
 			Analyzer:   localactivitymisuse.Analyzer},
+		{Name: expensiveworkflowcomputation.Analyzer.Name, Category: CategoryReplay, Status: StatusImplemented,
+			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#performing-expensive-computation-in-workflow-code",
+			Summary:    "Bans a narrow allowlist of expensive stdlib calls (hashing, JSON, gzip, regexp.Compile) inside workflow code.",
+			Analyzer:   expensiveworkflowcomputation.Analyzer},
 
 		// --- Batch 7: Operations + soft-flag promotions ---
 		{Name: nogracefuldrain.Analyzer.Name, Category: CategoryOperations, Status: StatusImplemented,
