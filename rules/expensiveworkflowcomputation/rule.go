@@ -25,6 +25,8 @@ import (
 
 var enabled = true
 
+var bans = buildBans()
+
 var Analyzer = &analysis.Analyzer{
 	Name:     "expensiveworkflowcomputation",
 	Doc:      "Bans a narrow allowlist of expensive stdlib calls (hashing, JSON, gzip, regexp.Compile) inside workflow code.",
@@ -34,30 +36,6 @@ var Analyzer = &analysis.Analyzer{
 		if !enabled {
 			return nil, nil
 		}
-		bans := []temporalctx.CallBan{}
-		for _, hashPkg := range []string{"crypto/sha1", "crypto/sha256", "crypto/sha512", "crypto/md5"} {
-			for _, fn := range []string{"Sum", "New"} {
-				bans = append(bans, temporalctx.CallBan{Pkg: hashPkg, Func: fn,
-					Message: hashPkg + "." + fn + " in workflow code; hashing replays on every history fetch — move into an activity"})
-			}
-			// sha256 / sha512 also expose Sum224 / Sum384 — add those.
-			for _, fn := range []string{"Sum224", "Sum256", "Sum384", "Sum512"} {
-				bans = append(bans, temporalctx.CallBan{Pkg: hashPkg, Func: fn,
-					Message: hashPkg + "." + fn + " in workflow code; hashing replays on every history fetch — move into an activity"})
-			}
-		}
-		for _, fn := range []string{"Marshal", "Unmarshal", "MarshalIndent"} {
-			bans = append(bans, temporalctx.CallBan{Pkg: "encoding/json", Func: fn,
-				Message: "encoding/json." + fn + " in workflow code; JSON encoding replays on every history fetch — move into an activity"})
-		}
-		for _, fn := range []string{"NewReader", "NewWriter"} {
-			bans = append(bans, temporalctx.CallBan{Pkg: "compress/gzip", Func: fn,
-				Message: "compress/gzip." + fn + " in workflow code; compression replays on every history fetch — move into an activity"})
-		}
-		for _, fn := range []string{"Compile", "MustCompile"} {
-			bans = append(bans, temporalctx.CallBan{Pkg: "regexp", Func: fn,
-				Message: "regexp." + fn + " in workflow code; pattern compilation replays on every history fetch — hoist to package scope or move into an activity"})
-		}
 		temporalctx.RunCallBans(pass, bans)
 		return nil, nil
 	},
@@ -65,4 +43,28 @@ var Analyzer = &analysis.Analyzer{
 
 func init() {
 	Analyzer.Flags.BoolVar(&enabled, "expensiveworkflowcomputation", true, "enable expensiveworkflowcomputation (default true)")
+}
+
+func buildBans() []temporalctx.CallBan {
+	var out []temporalctx.CallBan
+	hashFuncs := []string{"Sum", "New", "Sum224", "Sum256", "Sum384", "Sum512"}
+	for _, hashPkg := range []string{"crypto/sha1", "crypto/sha256", "crypto/sha512", "crypto/md5"} {
+		for _, fn := range hashFuncs {
+			out = append(out, temporalctx.CallBan{Pkg: hashPkg, Func: fn,
+				Message: hashPkg + "." + fn + " in workflow code; hashing replays on every history fetch — move into an activity"})
+		}
+	}
+	for _, fn := range []string{"Marshal", "Unmarshal", "MarshalIndent"} {
+		out = append(out, temporalctx.CallBan{Pkg: "encoding/json", Func: fn,
+			Message: "encoding/json." + fn + " in workflow code; JSON encoding replays on every history fetch — move into an activity"})
+	}
+	for _, fn := range []string{"NewReader", "NewWriter"} {
+		out = append(out, temporalctx.CallBan{Pkg: "compress/gzip", Func: fn,
+			Message: "compress/gzip." + fn + " in workflow code; compression replays on every history fetch — move into an activity"})
+	}
+	for _, fn := range []string{"Compile", "MustCompile"} {
+		out = append(out, temporalctx.CallBan{Pkg: "regexp", Func: fn,
+			Message: "regexp." + fn + " in workflow code; pattern compilation replays on every history fetch — hoist to package scope or move into an activity"})
+	}
+	return out
 }

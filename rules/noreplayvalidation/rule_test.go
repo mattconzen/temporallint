@@ -1,7 +1,6 @@
 package noreplayvalidation_test
 
 import (
-	"flag"
 	"testing"
 
 	"golang.org/x/tools/go/analysis/analysistest"
@@ -22,8 +21,4 @@ func TestAnalyzer(t *testing.T) {
 	dir := analysistest.TestData()
 	analysistest.Run(t, dir, noreplayvalidation.Analyzer, "violation")
 	analysistest.Run(t, dir, noreplayvalidation.Analyzer, "clean")
-
-	// Touch flag pkg so the import is "used" if we ever drop the inner
-	// flag.Set above.
-	_ = flag.CommandLine
 }

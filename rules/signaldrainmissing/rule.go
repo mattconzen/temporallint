@@ -45,10 +45,8 @@ func run(pass *analysis.Pass) (any, error) {
 		if !temporalctx.IsWorkflowFunc(pass, fn) || fn.Body == nil {
 			return
 		}
-		if !callsGetSignalChannel(fn.Body) {
-			return
-		}
-		if hasHasPending(fn.Body) {
+		readsSignals, drainsSignals := scanSignalUsage(fn.Body)
+		if !readsSignals || drainsSignals {
 			return
 		}
 		pass.Report(analysis.Diagnostic{
@@ -59,41 +57,25 @@ func run(pass *analysis.Pass) (any, error) {
 	return nil, nil
 }
 
-func callsGetSignalChannel(body *ast.BlockStmt) bool {
-	found := false
+func scanSignalUsage(body *ast.BlockStmt) (readsSignals, drainsSignals bool) {
 	ast.Inspect(body, func(n ast.Node) bool {
-		if found {
+		if readsSignals && drainsSignals {
 			return false
 		}
 		call, ok := n.(*ast.CallExpr)
 		if !ok {
 			return true
 		}
-		if temporalctx.MatchSelectorCall(call, "workflow", "GetSignalChannel") {
-			found = true
-			return false
+		if !readsSignals && temporalctx.MatchSelectorCall(call, "workflow", "GetSignalChannel") {
+			readsSignals = true
+			return true
+		}
+		if !drainsSignals {
+			if sel, ok := call.Fun.(*ast.SelectorExpr); ok && sel.Sel.Name == "HasPending" {
+				drainsSignals = true
+			}
 		}
 		return true
 	})
-	return found
-}
-
-func hasHasPending(body *ast.BlockStmt) bool {
-	found := false
-	ast.Inspect(body, func(n ast.Node) bool {
-		if found {
-			return false
-		}
-		call, ok := n.(*ast.CallExpr)
-		if !ok {
-			return true
-		}
-		sel, ok := call.Fun.(*ast.SelectorExpr)
-		if !ok || sel.Sel.Name != "HasPending" {
-			return true
-		}
-		found = true
-		return false
-	})
-	return found
+	return readsSignals, drainsSignals
 }
