@@ -47,9 +47,14 @@ func init() {
 
 func buildBans() []temporalctx.CallBan {
 	var out []temporalctx.CallBan
-	hashFuncs := []string{"Sum", "New", "Sum224", "Sum256", "Sum384", "Sum512"}
+	hashFuncsByPkg := map[string][]string{
+		"crypto/sha1":   {"Sum", "New"},
+		"crypto/md5":    {"Sum", "New"},
+		"crypto/sha256": {"Sum256", "Sum224", "New", "New224"},
+		"crypto/sha512": {"Sum512", "Sum384", "New", "New384"},
+	}
 	for _, hashPkg := range []string{"crypto/sha1", "crypto/sha256", "crypto/sha512", "crypto/md5"} {
-		for _, fn := range hashFuncs {
+		for _, fn := range hashFuncsByPkg[hashPkg] {
 			out = append(out, temporalctx.CallBan{Pkg: hashPkg, Func: fn,
 				Message: hashPkg + "." + fn + " in workflow code; hashing replays on every history fetch — move into an activity"})
 		}
