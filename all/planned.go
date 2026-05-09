@@ -145,13 +145,10 @@ func planned() []Entry {
 		{Name: "decode-payloads-in-history-export", Category: CategoryOperations, Status: StatusDocOnly,
 			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#downloading-history-with-decodepayloads-enabled",
 			Summary:    "Don't export history with payloads decoded in plaintext."},
-		{Name: "no-replay-validation", Category: CategoryOperations, Status: StatusPlanned,
-			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#not-validating-replay-safety-before-deployments",
-			Summary:    "Run replay tests in CI to catch non-deterministic changes pre-deploy."},
 
 		// --- Other --------------------------------------------------------
-		{Name: "wrong-task-queue", Category: CategoryOther, Status: StatusPlanned,
+		{Name: "wrong-task-queue", Category: CategoryOther, Status: StatusDocOnly,
 			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#starting-workflows-on-wrong-task-queue",
-			Summary:    "Mismatch between client task queue and worker registration."},
+			Summary:    "Package-local case is covered by `startworkflowbadtaskqueue` (Batch 7); cross-package detection requires analysis.Fact plumbing not used elsewhere."},
 	}
 }

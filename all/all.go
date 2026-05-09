@@ -29,6 +29,7 @@ import (
 	"github.com/mattconzen/temporallint/rules/nogracefuldrain"
 	"github.com/mattconzen/temporallint/rules/noheartbeatdetails"
 	"github.com/mattconzen/temporallint/rules/noparentclosepolicy"
+	"github.com/mattconzen/temporallint/rules/noreplayvalidation"
 	"github.com/mattconzen/temporallint/rules/oversizedpayloadreturn"
 	"github.com/mattconzen/temporallint/rules/payloadanderror"
 	"github.com/mattconzen/temporallint/rules/pollingloopwithsleep"
@@ -254,6 +255,10 @@ func implemented() []Entry {
 			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#performing-expensive-computation-in-workflow-code",
 			Summary:    "Bans a narrow allowlist of expensive stdlib calls (hashing, JSON, gzip, regexp.Compile) inside workflow code.",
 			Analyzer:   expensiveworkflowcomputation.Analyzer},
+		{Name: noreplayvalidation.Analyzer.Name, Category: CategoryOperations, Status: StatusImplemented,
+			MistakeURL: "https://github.com/jlegrone/100-temporal-mistakes#not-validating-replay-safety-before-deployments",
+			Summary:    "Packages with workflow definitions should also have a replay test (default-off).",
+			Analyzer:   noreplayvalidation.Analyzer},
 
 		// --- Batch 7: Operations + soft-flag promotions ---
 		{Name: nogracefuldrain.Analyzer.Name, Category: CategoryOperations, Status: StatusImplemented,

@@ -30,6 +30,7 @@ Status legend:
 | `nogracefuldrain` | Operations | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#not-draining-activity-tasks-before-shutdown) |
 | `noheartbeatdetails` | Software Design | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#not-using-activity-heartbeat-details) |
 | `noparentclosepolicy` | Cancellation | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#not-using-parentclosepolicy) |
+| `noreplayvalidation` | Operations | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#not-validating-replay-safety-before-deployments) |
 | `oversizedpayloadreturn` | Software Design | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#passing-too-much-information-from-activities) |
 | `payloadanderror` | Software Design | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#returning-both-payload-and-error) |
 | `pollingloopwithsleep` | Software Design | Implemented | [link](https://github.com/jlegrone/100-temporal-mistakes#writing-polling-loops-in-workflow-code) |
@@ -70,8 +71,6 @@ Status legend:
 | `history-event-overflow` | Workflow Limits | RuntimeImplemented | [link](https://github.com/jlegrone/100-temporal-mistakes#overflowing-workflow-history-length) |
 | `individual-payload-overflow` | Workflow Limits | RuntimeImplemented | [link](https://github.com/jlegrone/100-temporal-mistakes#overflowing-maximum-individual-payload-size) |
 | `no-workflow-timeout` | Timeouts & Retries | RuntimeImplemented | [link](https://github.com/jlegrone/100-temporal-mistakes#not-setting-a-workflow-timeout) |
-| `no-replay-validation` | Operations | Planned | [link](https://github.com/jlegrone/100-temporal-mistakes#not-validating-replay-safety-before-deployments) |
-| `wrong-task-queue` | Other | Planned | [link](https://github.com/jlegrone/100-temporal-mistakes#starting-workflows-on-wrong-task-queue) |
 | `exceeding-task-timeout` | Workflow Limits | RuntimeOnly | [link](https://github.com/jlegrone/100-temporal-mistakes#exceeding-10s-task-timeout) |
 | `no-stsl-monitoring` | Operations | RuntimeOnly | [link](https://github.com/jlegrone/100-temporal-mistakes#not-monitoring-stsl) |
 | `no-sync-match-monitoring` | Operations | RuntimeOnly | [link](https://github.com/jlegrone/100-temporal-mistakes#not-monitoring-sync-match-rate) |
@@ -110,6 +109,7 @@ Status legend:
 | `work-outside-workflow` | Software Design | DocOnly | [link](https://github.com/jlegrone/100-temporal-mistakes#doing-work-outside-workflows) |
 | `workflow-id-collision` | Software Design | DocOnly | [link](https://github.com/jlegrone/100-temporal-mistakes#not-properly-scoping-semantic-workflow-ids) |
 | `workflow-timeout-cleanup` | Timeouts & Retries | DocOnly | [link](https://github.com/jlegrone/100-temporal-mistakes#assuming-workflow-timeouts-allow-graceful-cleanup) |
+| `wrong-task-queue` | Other | DocOnly | [link](https://github.com/jlegrone/100-temporal-mistakes#starting-workflows-on-wrong-task-queue) |
 
 
 ## Running runtime checks
